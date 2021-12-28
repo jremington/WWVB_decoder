@@ -1,7 +1,7 @@
 # WWVB_decoder
 New, more accurate WWVB time signal decoder for Arduino, based on cross correlation with bit templates
 
-Inspired by extracting a WWVB receiver with loop antenna from an Oregon Scientific "radio controlled" clock, I looked for Arduino receiver examples.  The following two Github repositories had useful code, so I based this project on those offerings.
+Inspired by extracting a WWVB receiver with loop antenna from an Oregon Scientific "radio controlled" weather station display, I looked for Arduino receiver examples.  The following two Github repositories had useful code, so I based this project on those offerings.
 
 // https://github.com/bhall66/WWVB-clock
 
