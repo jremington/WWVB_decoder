@@ -433,8 +433,7 @@ void setup() {
 }
 
 void loop() {
-  //  if(newval) {Serial.print(val); newval=0;}
   checkRadioData();                               // collect data & update time
   updateTimeDisplay();                            // keep display current
-  //  if (needSync()) doSync();                       // re-synchronize if data is stale
+  //  if (needSync()) doSync();                       // re-synchronize if data is stale, currently disabled
 }
