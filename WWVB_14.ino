@@ -254,7 +254,7 @@ void getRadioTime()                                // decode time from current f
     dy -= dim;  mo += 1;                         // no, subtract all days in this month
   }
 
-  // data to serial, NOR corrected for WWVB "missing minute"
+  // data to serial, NOT CORRECTED for WWVB "missing minute" (see commented out section below)
 
   Serial.print("UTC ");
   if (mo < 10) Serial.print("0"); Serial.print(mo); // mm/dd/yyyy format
