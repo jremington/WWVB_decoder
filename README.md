@@ -1,14 +1,14 @@
 # WWVB_decoder
 New, more accurate WWVB time signal decoder, based on cross correlation with bit templates
 
-Inspired by extracting a WWVB receiver with loop antenna from an Oregon Scientific clock, I looked for Arduino receiver examples.  The following two Github repositories had useful code, so I based this project on those offerings.
+Inspired by extracting a WWVB receiver with loop antenna from an Oregon Scientific "radio controlled" clock, I looked for Arduino receiver examples.  The following two Github repositories had useful code, so I based this project on those offerings.
 
 // https://github.com/bhall66/WWVB-clock
 // https://github.com/ahooper/WWVBClock/blob/master/WWVB7ino
 
 However, I was not happy with the high error rate observed with the primitive procedures used to decode the bit values, so I rewrote that to use cross correlation techniques. It is vastly more accurate, and under good reception conditions can decode WWVB time signals without single bit errors for hours on end.
 
-Note: WWVB radios differ in the logic level used to represent a "modulated" bit (binary one) and may be either HIGH or LOW. The code in this repository assumes HIGH receiver output = modulated = binary one.  Easy to change!
+Note: WWVB radios differ in the logic level used to represent a "modulated" bit (binary one) and may be either HIGH or LOW. The code in this repository assumes HIGH receiver output = modulated = binary one.  Easy to change in the Interrupt Service Routine for Timer1.
 
 I also added a routine to unambiguously detect the double sync pulse signifying the start of the frame.
 
