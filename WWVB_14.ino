@@ -24,7 +24,7 @@
 #define HIBIT  1                                   // value for bit '1'
 #define LOBIT  0                                   // value for bit '0'
 
-#define SAMPLE_HZ  50                            // must be a factor of 62500: 2, 4, 5, 10, 20, 25, 50, 100, 125
+#define SAMPLE_HZ  50                            // must be a factor of 400: 2, 4, 5, 10, 20, 25, 50, 100
 #define SYNCTIMEOUT 300                           // seconds until sync gives up
 #define SYNCFREQUENCY 4                          // minutes since last successful decode
 #define MIN_SYNC_CORR1 (SAMPLE_HZ-4)              // minimum successful correlation of template with sync pulse
@@ -338,6 +338,7 @@ bool sync() {                                      // return true if sync succes
       j = i + psample;
       if (j > (SAMPLE_HZ - 1)) j -= SAMPLE_HZ;   //align sample array with sync pulse template
       bool S0 = (samples[j] == 0);          //shorthand
+      // template is 800 ms "1" and 200 ms "0", time index i
       if ( i < 40 && samples[j]) corr++;    //unweight cross correlation function
       if ( i > 39 && S0) corr++;            //count bits in the right places
       if ( i > 39 && samples[j]) corr--;    //subtract bits in the wrong places
@@ -378,6 +379,7 @@ bool sync() {                                      // return true if sync succes
     j = i + psample;
     if (j > (SAMPLE_HZ - 1)) j -= SAMPLE_HZ;   //align sample array with template
     bool S0 = (samples[j] == 0);          //shorthand
+    // template is 800 ms "1" and 200 ms "0", time index i
     if ( i < 40 && samples[j]) corr++;    //unweight cross correlation function
     if ( i > 39 && S0) corr++;            //count bits in the right places
     if ( i > 39 && samples[j]) corr--;    //subtract bits in the wrong places
