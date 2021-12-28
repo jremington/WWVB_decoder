@@ -11,7 +11,7 @@ However, I was not happy with the high error rate observed with the primitive pr
 
 Note: WWVB radios differ in the logic level used to represent a "modulated" bit (binary one) and may be either HIGH or LOW. The code in this repository assumes HIGH receiver output = modulated = binary one.  Easy to change in the Interrupt Service Routine for Timer1.
 
-I also added a routine to unambiguously detect the double sync pulse signifying the start of the frame.
+I also added a routine to unambiguously detect the double sync pulse signifying the start of the frame. No code for a graphic display is offered, as those change so rapidly that code for any particular display quickly becomes obsolete. And, graphic displays are always a matter of personal taste. 
 
 Example output on Serial: (bit values shown below, marker bit = 2). 
 
