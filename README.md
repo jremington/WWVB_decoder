@@ -7,7 +7,7 @@ Inspired by extracting a WWVB receiver with loop antenna from an Oregon Scientif
 
 // https://github.com/ahooper/WWVBClock/blob/master/WWVB7ino
 
-However, I was not happy with the high error rate observed with the primitive procedures used to decode the bit values, so I rewrote that to use cross correlation techniques. It is vastly more accurate, and under good reception conditions can decode WWVB time signals without single bit errors for hours on end.
+However, I was not happy with the high error rate observed with the primitive procedures used to decode the bit values, so I rewrote that to use cross correlation techniques. The resulting code is significantly more accurate, and under good reception conditions can decode WWVB time signals without single bit errors for hours on end.
 
 Note: WWVB radios differ in the logic level used to represent a "modulated" bit (binary one) and may be either HIGH or LOW. The code in this repository assumes HIGH receiver output = modulated = binary one.  Easy to change in the Interrupt Service Routine for Timer1.
 
