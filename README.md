@@ -106,6 +106,6 @@ SYNCING: valid frames 0/0/0: |49,20|48,21|49,23|49,50|OK
 
 TODO:  When single bit errors do occur, they can be disastrous. Need to add code to compare successive frames to discard such frames.
 
-Photo of WWVB receiver module extracted from Oregon Scientific RMR112A weather station indoor module:
+Photo of WWVB receiver module extracted from Oregon Scientific RMR112A weather station indoor module. I constructed a single-transistor level shifting interface to invert the 3V LOW signal to 5V HIGH for input to an Arduino.
 
 ![Photo of Oregon Scientific RMR112A WWVB receiver module](https://github.com/jremington/WWVB_decoder/blob/d06a4f027d7323ffc2fceca21fdb95d49aa655cf/RMR112A_WWVB.jpg?raw=true)
