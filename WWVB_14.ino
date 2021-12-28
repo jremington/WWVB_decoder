@@ -9,7 +9,8 @@
 
 // sample rate reduced to 50 Hz
 // clock drift problem fixed by properly initializing Timer1
-//
+
+//*** AVR based Arduino assumed ***  Sampling timer must be recoded for other MCUs.
 
 
 #include <TimeLib.h>                               // time functions - install within IDE 
