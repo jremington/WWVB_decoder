@@ -105,3 +105,5 @@ SYNCING: valid frames 0/0/0: |49,20|48,21|49,23|49,50|OK
 210001000200100001020011001102000100010200010001020001000002UTC 12/27/2021 22:48 L 0 DST 0
 
 TODO:  When single bit errors do occur, they can be disastrous. Need to add code to compare successive frames to discard such frames.
+
+[img]https://github.com/jremington/WWVB_decoder/blob/d06a4f027d7323ffc2fceca21fdb95d49aa655cf/RMR112A_WWVB.jpg[/img]
