@@ -13,7 +13,9 @@ Note: WWVB radios differ in the logic level used to represent a "modulated" bit 
 
 I also added a routine to unambiguously detect the double sync pulse signifying the start of the frame.
 
-Example output on Serial: (bit values shown below, marker bit = 2). These data were collected about 2000 km from WWVB in Colorado, USA.
+Example output on Serial: (bit values shown below, marker bit = 2). 
+
+These data were collected about 2000 km from WWVB in Colorado, USA.
 
 WWVB_13 50 Hz new double sync, template cross correlation
 SYNCING: valid frames 0/0/0: |49,20|48,21|49,23|49,50|OK
