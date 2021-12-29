@@ -135,7 +135,7 @@ Thus, the inner loop for cross correlating the received bit stream X with, for e
   
   if ( i < 80 && val) bitcorr[2]++;               //cross correlation to MARKER template = "1" for samples 0 to 79
   if ( i > 79 && V0)  bitcorr[2]++;              // template = "0" for samples 80 to 99
-  if ( i < 80 && V0)  bitcorr[2]--;               //correct for bits in the wrong place
+  if ( i < 80 && V0)  bitcorr[2]--;               //correct for 1/0 samples in the wrong place
   if ( i > 79 && val) bitcorr[2]--;
   ```
   
