@@ -120,14 +120,15 @@ Note on unweighted cross correlation for binary bit streams:
 
 The unweighted cross correlation is defined as 
 SUM( (x - xave) * (y - yave))
-where xave and yave are the average values of the bit streams. Assuming the average value to be 0.5 and scaling up by a factor of 2, the product becomes as simple as counting 1 bits and 0 bits in X that coincide with 1 bits and 0 bits of the Y stream, and subtracting those 1's and 0's that are in the wrong place.
+where xave and yave are the average values of the bit streams. Assuming the average value to be 0.5 and scaling up by a factor of 2, the sum of products becomes as simple as counting 1 bits and 0 bits in the X stream that coincide with 1 bits and 0 bits of the Y stream, and subtracting those 1's and 0's that are in the wrong place.
 
 The WWVB bits are defined as "1" for 0.2, 0.5 or 0.8 seconds, followed by "0" for the rest of the one second bit frame. The bit stream templates can be calculated on the fly by simply examining the time index, and making the 1/0 choice dependent on the progression of time.
 
-Thus, the inner loop of correlating the received bit stream X with the template marker pulse Y (800 ms "1" followed by 200 ms of "0" simply becomes
+Thus, the inner loop for cross correlating the received bit stream X with, for example, the MARKER pulse template Y (800 ms "1" followed by 200 ms of "0" becomes simply the following, and is very fast.
 
-  val = digitalRead(input);
-  bool V0 = (val == 0);
+  val = digitalRead(input);  //get latest sample from radio
+  
+  bool V0 = (val == 0);   //shortcut for writing the following code
   
   // i is sample index of incoming bitstream, 100 samples per second
   
