@@ -139,4 +139,4 @@ Thus, the inner loop for cross correlating the received bit stream X with, for e
   if ( i > 79 && val) bitcorr[2]--;
   ```
   
-  For 100 samples the values of the correlation function range from 100 for a perfect match, 0 for uncorrelated, to -100 for a perfect mismatch.
+  For 100 samples the values of the correlation function range from 100 for a perfect match, to 0 for uncorrelated, to -100 for a perfect mismatch.
