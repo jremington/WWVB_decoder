@@ -139,4 +139,17 @@ Thus, the inner loop for cross correlating the received bit stream X with, for e
   if ( i > 79 && val) bitcorr[2]--;
   ```
   
+  This can be optimized slightly, but a good compiler would do that automatically:
+  
+  ```
+    if ( i < 80 ) {
+    if (val) bitcorr[2]++;               //cross correlation to MARKER template
+    else bitcorr[2]--;                   //correct for bit in the wrong plac
+  }
+  if ( i > 79 ) {                       //ideally, zero from now on
+    if (V0) bitcorr[2]++;
+    else bitcorr[2]--;
+  }
+  ```
+  
   For 100 samples the values of the correlation function range from 100 for a perfect match, to 0 for uncorrelated, to -100 for a perfect mismatch.
