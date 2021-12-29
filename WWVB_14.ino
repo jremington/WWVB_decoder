@@ -4,10 +4,10 @@
 
 // major revisions of both by SJR 12/2021
 // This version assumes WWVB radio output = HIGH for modulated signal (carrier reduced)
-// Uses pseudo cross-correlation of bit samples to identify two successive sync pulses => start of new frame
+// Unweighted cross-correlation of bit samples is used to identify two successive sync pulses => start of new frame
 // Bit types classified by unweighted cross-correlation
-
-// sample rate reduced to 50 Hz
+// latest mods:
+// sample rate reduced to 50 Hz (50 samples per bit)
 // clock drift problem fixed by properly initializing Timer1
 
 //*** AVR based Arduino assumed ***  Sampling timer must be recoded for other MCUs.
@@ -339,7 +339,7 @@ bool sync() {                                      // return true if sync succes
       if (j > (SAMPLE_HZ - 1)) j -= SAMPLE_HZ;   //align sample array with sync pulse template
       bool S0 = (samples[j] == 0);          //shorthand
       // template is 800 ms "1" and 200 ms "0", time index i
-      if ( i < 40 && samples[j]) corr++;    //unweight cross correlation function
+      if ( i < 40 && samples[j]) corr++;    //unweighted cross correlation function
       if ( i > 39 && S0) corr++;            //count bits in the right places
       if ( i > 39 && samples[j]) corr--;    //subtract bits in the wrong places
       if ( i < 40 && S0) corr--;
@@ -383,7 +383,7 @@ bool sync() {                                      // return true if sync succes
     if (j > (SAMPLE_HZ - 1)) j -= SAMPLE_HZ;   //align sample array with template
     bool S0 = (samples[j] == 0);          //shorthand
     // template is 800 ms "1" and 200 ms "0", time index i
-    if ( i < 40 && samples[j]) corr++;    //unweight cross correlation function
+    if ( i < 40 && samples[j]) corr++;    //unweighted cross correlation function
     if ( i > 39 && S0) corr++;            //count bits in the right places
     if ( i > 39 && samples[j]) corr--;    //subtract bits in the wrong places
     if ( i < 40 && S0) corr--;
