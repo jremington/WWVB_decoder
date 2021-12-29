@@ -114,3 +114,26 @@ So, code is needed to compare successive frames to identify erroneous bits. A "v
 Below: photo of WWVB receiver module extracted from Oregon Scientific RMR112A weather station indoor module. I constructed a single-transistor level shifting interface to invert the 3V LOW signal to 5V HIGH for input to an Arduino.
 
 ![Photo of Oregon Scientific RMR112A WWVB receiver module](https://github.com/jremington/WWVB_decoder/blob/d06a4f027d7323ffc2fceca21fdb95d49aa655cf/RMR112A_WWVB.jpg?raw=true)
+
+
+Note on unweighted cross correlation for binary bit streams:
+
+The unweighted cross correlation is defined as 
+SUM( (x - xave) * (y - yave))
+where xave and yave are the average values of the bit streams. Assuming the average value to be 0.5 and scaling up by a factor of 2, the product becomes as simple as counting 1 bits and 0 bits in X that coincide with 1 bits and 0 bits of the Y stream, and subtracting those 1's and 0's that are in the wrong place.
+
+The WWVB bits are defined as "1" for 0.2, 0.5 or 0.8 seconds, followed by "0" for the rest of the one second bit frame. The bit stream templates can be calculated on the fly by simply examining the time index, and making the 1/0 choice dependent on the progression of time.
+
+Thus, the inner loop of correlating the received bit stream X with the template marker pulse Y (800 ms "1" followed by 200 ms of "0" simply becomes
+
+  val = digitalRead(input);
+  bool V0 = (val == 0);
+  
+  // i is sample index of incoming bitstream, 100 samples per second
+  
+  if ( i < 80 && val) bitcorr[2]++;               //cross correlation to MARKER template = "1" for samples 0 to 79
+  if ( i > 79 && V0)  bitcorr[2]++;              // template = "0" for samples 80 to 99
+  if ( i < 80 && V0)  bitcorr[2]--;               //correct for bits in the wrong place
+  if ( i > 79 && val) bitcorr[2]--;
+  
+  The values of the correlation function range 100 for a perfect match, to -100 for a perfect mismatch.
