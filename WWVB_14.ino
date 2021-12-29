@@ -356,6 +356,8 @@ bool sync() {                                      // return true if sync succes
     psample++;   //start of next frame to test
     if (psample >= SAMPLE_HZ) psample = 0;
   }
+  
+    sampleCounter = 0;                             // reset ISR sampleCounter for 1 second
     if (timedOut) return !timedOut;
   Serial.print(corr); Serial.print(",");
 
@@ -390,7 +392,7 @@ bool sync() {                                      // return true if sync succes
 
   if (corr < MIN_SYNC_CORR2) timedOut = true;    //not a second sync pulse
 
-  sampleCounter = 0;                             // reset sampleCounter for 1 second
+  sampleCounter = 0;                             // reset ISR sampleCounter for 1 second
   return !timedOut;                                // true = sync successful
 }
 
