@@ -356,6 +356,7 @@ bool sync() {                                      // return true if sync succes
     psample++;   //start of next frame to test
     if (psample >= SAMPLE_HZ) psample = 0;
   }
+    if (timedOut) return !timedOut;
   Serial.print(corr); Serial.print(",");
 
   // found a sync pulse
