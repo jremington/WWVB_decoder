@@ -4,13 +4,12 @@
 
 // major revisions of both by SJR 12/2021
 // This version assumes WWVB radio output = HIGH for modulated signal (carrier reduced)
-// Unweighted cross-correlation of bit samples is used to identify two successive sync pulses => start of new frame
+// Uses unweighted cross-correlation of bit samples to identify two successive sync pulses => start of new frame
 // Bit types classified by unweighted cross-correlation
-// latest mods:
-// sample rate reduced to 50 Hz (50 samples per bit)
-// clock drift problem fixed by properly initializing Timer1
 
-//*** AVR based Arduino assumed ***  Sampling timer must be recoded for other MCUs.
+// sample rate reduced to 50 Hz
+// clock drift problem fixed by properly initializing Timer1
+//
 
 
 #include <TimeLib.h>                               // time functions - install within IDE 
@@ -24,7 +23,7 @@
 #define HIBIT  1                                   // value for bit '1'
 #define LOBIT  0                                   // value for bit '0'
 
-#define SAMPLE_HZ  50                            // must be a factor of 400: 2, 4, 5, 10, 20, 25, 50, 100
+#define SAMPLE_HZ  50                            // must be a factor of 62500: 2, 4, 5, 10, 20, 25, 50, 100, 125
 #define SYNCTIMEOUT 300                           // seconds until sync gives up
 #define SYNCFREQUENCY 4                          // minutes since last successful decode
 #define MIN_SYNC_CORR1 (SAMPLE_HZ-4)              // minimum successful correlation of template with sync pulse
@@ -109,21 +108,33 @@ ISR(TIMER1_COMPA_vect) {  // called every 20mS @50 Hz
     bitcorr[2] = 0;
   };
   byte i = sampleCounter;
-  bool V0 = (val == 0);
-  if ( i < 10 && val) bitcorr[0]++;               //cross correlation to LOW template
-  if ( i >  9 && V0)  bitcorr[0]++;
-  if ( i < 10 && V0)  bitcorr[0]--;               //correct for bits in the wrong place
-  if ( i >  9 && val) bitcorr[0]--;
+  bool V0 = (val == 0);                 // shortcut
+  if ( i < 10 ) {
+    if (val) bitcorr[0]++;               //cross correlation to LOW template
+    else bitcorr[0]--;                   //correct for bit in the wrong plac
+  }
+  if ( i > 9 ) {                       //ideally, zero from now on
+    if (V0) bitcorr[0]++;
+    else bitcorr[0]--;
+  }
 
-  if ( i < 25 && val) bitcorr[1]++;               //cross correlation to HIGH template
-  if ( i > 24 && V0)  bitcorr[1]++;
-  if ( i < 25 && V0)  bitcorr[1]--;               //correct for bits in the wrong place
-  if ( i > 24 && val) bitcorr[1]--;
+  if ( i < 25 ) {
+    if (val) bitcorr[1]++;               //cross correlation to HIGH template
+    else bitcorr[1]--;                   //correct for bit in the wrong plac
+  }
+  if ( i > 24 ) {                       //ideally, zero from now on
+    if (V0) bitcorr[1]++;
+    else bitcorr[1]--;
+  }
 
-  if ( i < 40 && val) bitcorr[2]++;               //cross correlation to MARKER template
-  if ( i > 39 && V0)  bitcorr[2]++;
-  if ( i < 40 && V0)  bitcorr[2]--;               //correct for bits in the wrong place
-  if ( i > 39 && val) bitcorr[2]--;
+  if ( i < 40 ) {
+    if (val) bitcorr[2]++;               //cross correlation to MARKER template
+    else bitcorr[2]--;                   //correct for bit in the wrong plac
+  }
+  if ( i > 39 ) {                       //ideally, zero from now on
+    if (V0) bitcorr[2]++;
+    else bitcorr[2]--;
+  }
 
   sampleCounter++;                             // count samples
   if (sampleCounter >= SAMPLE_HZ)                // full second of sampling?
@@ -255,7 +266,7 @@ void getRadioTime()                                // decode time from current f
     dy -= dim;  mo += 1;                         // no, subtract all days in this month
   }
 
-  // data to serial, NOT CORRECTED for WWVB "missing minute" (see commented out section below)
+  // data to serial, NOR corrected for WWVB "missing minute"
 
   Serial.print("UTC ");
   if (mo < 10) Serial.print("0"); Serial.print(mo); // mm/dd/yyyy format
@@ -337,12 +348,16 @@ bool sync() {                                      // return true if sync succes
     for (i = 0; i < SAMPLE_HZ; i++) {
       j = i + psample;
       if (j > (SAMPLE_HZ - 1)) j -= SAMPLE_HZ;   //align sample array with sync pulse template
+      bool S1 = (samples[j] == 1);
       bool S0 = (samples[j] == 0);          //shorthand
-      // template is 800 ms "1" and 200 ms "0", time index i
-      if ( i < 40 && samples[j]) corr++;    //unweighted cross correlation function
-      if ( i > 39 && S0) corr++;            //count bits in the right places
-      if ( i > 39 && samples[j]) corr--;    //subtract bits in the wrong places
-      if ( i < 40 && S0) corr--;
+      if ( i < 40 ) {      //1 in template
+        if (S1) corr++;    //unweighted cross correlation function
+        else corr--;      //subtract bits in the wrong places
+      }
+      if ( i > 39 ) {       //0 in template
+        if (S0) corr++;    //unweighted cross correlation function
+        else corr--;      //subtract bits in the wrong places
+      }
     }
     if (corr > MIN_SYNC_CORR1) break;  // found one
 
@@ -356,9 +371,10 @@ bool sync() {                                      // return true if sync succes
     psample++;   //start of next frame to test
     if (psample >= SAMPLE_HZ) psample = 0;
   }
-  
-    sampleCounter = 0;                             // reset ISR sampleCounter for 1 second
-    if (timedOut) return !timedOut;
+
+  sampleCounter = 0;                             // reset ISR sampleCounter for 1 second
+  if (timedOut) return !timedOut;
+
   Serial.print(corr); Serial.print(",");
 
   // found a sync pulse
@@ -381,15 +397,18 @@ bool sync() {                                      // return true if sync succes
     // calculate cross correlation with template
     j = i + psample;
     if (j > (SAMPLE_HZ - 1)) j -= SAMPLE_HZ;   //align sample array with template
+    bool S1 = (samples[j] == 1);
     bool S0 = (samples[j] == 0);          //shorthand
-    // template is 800 ms "1" and 200 ms "0", time index i
-    if ( i < 40 && samples[j]) corr++;    //unweighted cross correlation function
-    if ( i > 39 && S0) corr++;            //count bits in the right places
-    if ( i > 39 && samples[j]) corr--;    //subtract bits in the wrong places
-    if ( i < 40 && S0) corr--;
+    if ( i < 40 ) {
+      if (S1) corr++;    //unweighted cross correlation function
+      else corr--;      //subtract bits in the wrong places
+    }
+    if ( i > 39 ) {
+      if (S0) corr++;    //unweighted cross correlation function
+      else corr--;      //subtract bits in the wrong places
+    }
   }
   Serial.print(corr); Serial.print("|");
-
   if (corr < MIN_SYNC_CORR2) timedOut = true;    //not a second sync pulse
 
   sampleCounter = 0;                             // reset ISR sampleCounter for 1 second
@@ -438,7 +457,8 @@ void setup() {
 }
 
 void loop() {
+  //  if(newval) {Serial.print(val); newval=0;}
   checkRadioData();                               // collect data & update time
   updateTimeDisplay();                            // keep display current
-  //  if (needSync()) doSync();                       // re-synchronize if data is stale, currently disabled
+  //  if (needSync()) doSync();                       // re-synchronize if data is stale
 }
