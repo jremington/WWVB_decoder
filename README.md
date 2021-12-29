@@ -124,7 +124,7 @@ where xave and yave are the average values of the bit streams. Assuming the aver
 
 The WWVB bits are defined as "1" for 0.2, 0.5 or 0.8 seconds, followed by "0" for the rest of the one second bit frame. The bit stream templates can be calculated on the fly by simply examining the time index, and making the 1/0 choice dependent on the progression of time.
 
-Thus, the inner loop for cross correlating the received bit stream X with, for example, the MARKER pulse template Y (800 ms "1" followed by 200 ms of "0" becomes simply the following, and is very fast.
+Thus, the inner loop for cross correlating the received bit stream X with, for example, the MARKER pulse template Y (800 ms "1" followed by 200 ms of "0" becomes rather simple, as follows, and is very fast to compute.
 ```
 
   val = digitalRead(input);  //get latest sample from radio
